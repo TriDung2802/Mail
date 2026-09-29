@@ -19,16 +19,29 @@
         <properties>
 
             <property name="jakarta.persistence.jdbc.url"
-                      value="jdbc:postgresql://localhost:5432/murach"/>
+          value="jdbc:postgresql://dpg-dattqjid0e5s73dgjjog-a/mail_vmdf"/>
 
             <property name="jakarta.persistence.jdbc.user"
-                      value="postgres"/>
+          value="mail_user"/>
 
             <property name="jakarta.persistence.jdbc.driver"
                       value="org.postgresql.Driver"/>
 
-            <property name="jakarta.persistence.jdbc.password"
-                      value="Namnhat28022008"/>
+            <properties>
+
+    <property name="jakarta.persistence.jdbc.url"
+              value="jdbc:postgresql://dpg-dattqjid0e5s73dgjjog-a/mail_vmdf"/>
+
+    <property name="jakarta.persistence.jdbc.user"
+              value="mail_user"/>
+
+    <property name="jakarta.persistence.jdbc.driver"
+              value="org.postgresql.Driver"/>
+
+    <property name="jakarta.persistence.jdbc.password"
+              value="Namnhat28022008"/>
+
+</properties>
 
         </properties>
 
