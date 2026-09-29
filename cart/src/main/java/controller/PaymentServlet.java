@@ -1,6 +1,5 @@
 package controller;
 
-import jakarta.mail.MessagingException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -54,8 +53,13 @@ protected void doPost(HttpServletRequest request,
             + "Murach's Store";
 
     // 5. Gửi email
-    // Tạm thời bỏ gửi email khi deploy trên Render
-System.out.println("Payment successful for: " + to);
+    try {
+    MailUtil.sendMail(to, subject, body);
+    System.out.println("Email sent successfully to: " + to);
+} catch (Exception e) {
+    System.out.println("Failed to send email: " + e.getMessage());
+    e.printStackTrace();
+}
 
     // 6. Đưa total sang thanks.jsp
     request.setAttribute("total", total);
