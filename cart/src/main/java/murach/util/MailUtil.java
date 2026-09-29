@@ -21,25 +21,17 @@ public class MailUtil {
             );
         }
 
-        String json = """
-                {
-                    "sender": {
-                        "name": "Mail-2",
-                        "email": "tridung280208@gmail.com"
-                    },
-                    "to": [
-                        {
-                            "email": "%s"
-                        }
-                    ],
-                    "subject": "%s",
-                    "textContent": "%s"
-                }
-                """.formatted(
-                    escapeJson(to),
-                    escapeJson(subject),
-                    escapeJson(body)
-                );
+        String json = "{"
+        + "\"sender\":{"
+        + "\"name\":\"Mail-2\","
+        + "\"email\":\"tridung280208@gmail.com\""
+        + "},"
+        + "\"to\":[{"
+        + "\"email\":\"" + escapeJson(to) + "\""
+        + "}],"
+        + "\"subject\":\"" + escapeJson(subject) + "\","
+        + "\"textContent\":\"" + escapeJson(body) + "\""
+        + "}";
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://api.brevo.com/v3/smtp/email"))
