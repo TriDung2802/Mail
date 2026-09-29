@@ -1,0 +1,14 @@
+controller\LoginServlet.class
+murach\util\MailUtil.class
+controller\CartServlet$Product.class
+controller\CartServlet.class
+murach\util\MailUtil$1.class
+com\mycompany\cart\resources\JakartaEE10Resource.class
+controller\CartServlet$CartItem.class
+murach\data\DBUtil.class
+controller\LogoutServlet.class
+controller\PaymentServlet.class
+murach\business\User.class
+com\mycompany\cart\JakartaRestConfiguration.class
+controller\RegisterServlet.class
+murach\data\UserDB.class
