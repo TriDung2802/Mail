@@ -1,3 +1,4 @@
+
 package murach.util;
 
 import java.io.IOException;
@@ -17,51 +18,36 @@ public class MailUtil {
         // Lấy API key từ Environment Variable trên Render
         String apiKey = System.getenv("BREVO_API_KEY");
 
-        // ==============================
-        // KIỂM TRA API KEY
-        // ==============================
-
+        // Kiểm tra Render có nhận API key hay không
         System.out.println("API KEY EXISTS: "
                 + (apiKey != null && !apiKey.isBlank()));
 
         System.out.println("API KEY LENGTH: "
                 + (apiKey == null ? 0 : apiKey.length()));
 
-        // Nếu Render không có API key
         if (apiKey == null || apiKey.isBlank()) {
             throw new IllegalStateException(
                     "Chưa cấu hình BREVO_API_KEY trên Render"
             );
         }
 
-        // ==============================
-        // TẠO JSON GỬI BREVO
-        // ==============================
+        // Tạo JSON gửi cho Brevo
+        String json =
+                "{"
+                + "\"sender\":{"
+                + "\"name\":\"Mail-2\","
+                + "\"email\":\"tridung280208@gmail.com\""
+                + "},"
+                + "\"to\":["
+                + "{"
+                + "\"email\":\"" + escapeJson(to) + "\""
+                + "}"
+                + "],"
+                + "\"subject\":\"" + escapeJson(subject) + "\","
+                + "\"textContent\":\"" + escapeJson(body) + "\""
+                + "}";
 
-        String json = """
-                {
-                    "sender": {
-                        "name": "Mail-2",
-                        "email": "tridung280208@gmail.com"
-                    },
-                    "to": [
-                        {
-                            "email": "%s"
-                        }
-                    ],
-                    "subject": "%s",
-                    "textContent": "%s"
-                }
-                """.formatted(
-                    escapeJson(to),
-                    escapeJson(subject),
-                    escapeJson(body)
-                );
-
-        // ==============================
-        // TẠO HTTP REQUEST
-        // ==============================
-
+        // Tạo HTTP request
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(
                         "https://api.brevo.com/v3/smtp/email"
@@ -74,10 +60,7 @@ public class MailUtil {
                 )
                 .build();
 
-        // ==============================
-        // GỬI REQUEST
-        // ==============================
-
+        // Gửi request
         HttpClient client = HttpClient.newHttpClient();
 
         HttpResponse<String> response =
@@ -86,10 +69,7 @@ public class MailUtil {
                         HttpResponse.BodyHandlers.ofString()
                 );
 
-        // ==============================
-        // IN KẾT QUẢ
-        // ==============================
-
+        // In kết quả Brevo
         System.out.println(
                 "Brevo status: "
                 + response.statusCode()
@@ -100,10 +80,7 @@ public class MailUtil {
                 + response.body()
         );
 
-        // ==============================
-        // KIỂM TRA GỬI MAIL
-        // ==============================
-
+        // Kiểm tra kết quả
         if (response.statusCode() < 200
                 || response.statusCode() >= 300) {
 
@@ -119,10 +96,6 @@ public class MailUtil {
                 "Email sent successfully to: " + to
         );
     }
-
-    // ==============================
-    // ESCAPE JSON
-    // ==============================
 
     private static String escapeJson(String text) {
 
