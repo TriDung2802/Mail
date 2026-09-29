@@ -39,7 +39,7 @@
               value="org.postgresql.Driver"/>
 
     <property name="jakarta.persistence.jdbc.password"
-              value="Namnhat28022008"/>
+              value="kCocY96PGkf7QdKRLqKel2I2N4beE5rb"/>
 
 </properties>
 
