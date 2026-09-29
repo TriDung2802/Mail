@@ -54,23 +54,8 @@ protected void doPost(HttpServletRequest request,
             + "Murach's Store";
 
     // 5. Gửi email
-    try {
-
-        MailUtil.sendMail(
-                to,
-                subject,
-                body
-        );
-
-    } catch (MessagingException e) {
-
-        e.printStackTrace();
-
-        request.setAttribute(
-                "emailError",
-                "Unable to send confirmation email."
-        );
-    }
+    // Tạm thời bỏ gửi email khi deploy trên Render
+System.out.println("Payment successful for: " + to);
 
     // 6. Đưa total sang thanks.jsp
     request.setAttribute("total", total);
