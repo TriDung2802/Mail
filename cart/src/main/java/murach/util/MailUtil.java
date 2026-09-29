@@ -1,54 +1,86 @@
 package murach.util;
 
-import jakarta.mail.*;
-import jakarta.mail.internet.*;
-
-import java.util.Properties;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 public class MailUtil {
-public static void sendMail(
-        String to,
-        String subject,
-        String body)
-        throws MessagingException {
 
-    final String from = "tridung280208@gmail.com";
-    final String appPassword = "jkxt lyfn bthe anqn";
+    public static void sendMail(
+            String to,
+            String subject,
+            String body) throws IOException, InterruptedException {
 
-    Properties props = new Properties();
+        String apiKey = System.getenv("BREVO_API_KEY");
 
-    props.put("mail.smtp.host", "smtp.gmail.com");
-    props.put("mail.smtp.port", "587");
-    props.put("mail.smtp.auth", "true");
-    props.put("mail.smtp.starttls.enable", "true");
+        if (apiKey == null || apiKey.isBlank()) {
+            throw new IllegalStateException(
+                    "Chưa cấu hình BREVO_API_KEY trên Render"
+            );
+        }
 
-    Session session = Session.getInstance(
-            props,
-            new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(
-                            from,
-                            appPassword
-                    );
+        String json = """
+                {
+                    "sender": {
+                        "name": "Mail-2",
+                        "email": "tridung280208@gmail.com"
+                    },
+                    "to": [
+                        {
+                            "email": "%s"
+                        }
+                    ],
+                    "subject": "%s",
+                    "textContent": "%s"
                 }
-            }
-    );
+                """.formatted(
+                    escapeJson(to),
+                    escapeJson(subject),
+                    escapeJson(body)
+                );
 
-    Message message = new MimeMessage(session);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.brevo.com/v3/smtp/email"))
+                .header("accept", "application/json")
+                .header("api-key", apiKey)
+                .header("content-type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
 
-    message.setFrom(new InternetAddress(from));
+        HttpClient client = HttpClient.newHttpClient();
 
-    message.setRecipient(
-            Message.RecipientType.TO,
-            new InternetAddress(to)
-    );
+        HttpResponse<String> response =
+                client.send(
+                        request,
+                        HttpResponse.BodyHandlers.ofString()
+                );
 
-    message.setSubject(subject);
+        System.out.println("Brevo status: " + response.statusCode());
+        System.out.println("Brevo response: " + response.body());
 
-    message.setText(body);
+        if (response.statusCode() < 200 ||
+            response.statusCode() >= 300) {
 
-    Transport.send(message);
-}
+            throw new IOException(
+                    "Brevo gửi mail thất bại: "
+                    + response.statusCode()
+                    + " - "
+                    + response.body()
+            );
+        }
+    }
 
+    private static String escapeJson(String text) {
+        if (text == null) {
+            return "";
+        }
+
+        return text
+                .replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r");
+    }
 }
